@@ -1,0 +1,53 @@
+.nutrition-card {
+  background: white;
+  border-radius: 16px;
+  padding: 25px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.nutrition-card .card-header h2 {
+  margin: 0;
+  color: #16a34a;
+}
+
+.nutrition-card .card-header p {
+  color: #666;
+  margin-top: 8px;
+  margin-bottom: 20px;
+}
+
+.generate-btn {
+  background: #16a34a;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: #15803d;
+}
+
+.generate-btn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+}
+
+.nutrition-result {
+  margin-top: 25px;
+  background: #f6fff8;
+  border-left: 5px solid #16a34a;
+  padding: 18px;
+  border-radius: 10px;
+}
+
+.nutrition-result pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  font-family: inherit;
+  line-height: 1.7;
+  margin: 0;
+}
