@@ -1,4 +1,6 @@
 import os
+import json
+import re
 from pathlib import Path
 from dotenv import load_dotenv
 from groq import Groq
@@ -12,8 +14,6 @@ api_key = os.getenv("GROQ_API_KEY")
 print("API Key:", api_key)
 
 client = Groq(api_key=api_key)
-
-import re
 
 
 def _extract_days(message):
@@ -240,7 +240,6 @@ Rules:
 
     return response.choices[0].message.content
 
-import re
 
 _VALID_INTENTS = [
     "general_chat",
@@ -248,6 +247,7 @@ _VALID_INTENTS = [
     "modify_workout",
     "generate_nutrition",
     "modify_nutrition",
+    "reschedule_plan",
 ]
 
 
@@ -265,6 +265,7 @@ generate_workout
 modify_workout
 generate_nutrition
 modify_nutrition
+reschedule_plan
 
 Examples:
 
@@ -291,6 +292,21 @@ Remove eggs from breakfast
 
 How much protein do I need?
 -> general_chat
+
+Postpone my Monday workout to Wednesday
+-> reschedule_plan
+
+Move Day 2 to July 30
+-> reschedule_plan
+
+Swap Day 1 and Day 3
+-> reschedule_plan
+
+Prepone my Thursday plan to tomorrow
+-> reschedule_plan
+
+Can you reschedule my workout from July 28 to August 1?
+-> reschedule_plan
 
 User:
 {message}
@@ -327,3 +343,51 @@ User:
 
     # Nothing matched — default to general chat
     return "general_chat"
+
+
+def parse_reschedule(message, today_str):
+    """
+    Use the LLM to extract structured reschedule info from a user message.
+    Returns dict with:
+      - action: "move" or "swap"
+      - from_date: YYYY-MM-DD (or None if the user used a day label)
+      - to_date: YYYY-MM-DD (or None if the user used a day label)
+      - from_label: "Day 1" / "Monday" etc. (or None)
+      - to_label: "Day 3" / "Wednesday" etc. (or None)
+    """
+    prompt = f"""
+You are a date parser. Today is {today_str}.
+
+Given this user request, extract the reschedule details as JSON.
+
+Rules:
+- Convert relative dates (tomorrow, day after tomorrow, next Monday) to actual YYYY-MM-DD using today = {today_str}
+- If the user mentions "Day 1", "Day 2" etc, put that in from_label / to_label
+- If the user mentions a weekday (Monday, Tuesday), convert it to the NEXT upcoming date of that weekday as YYYY-MM-DD
+- If the user asks to swap two days, set action to "swap"
+- If the user asks to move/postpone/prepone one day, set action to "move"
+- Return ONLY valid JSON, nothing else
+
+User request:
+{message}
+
+JSON format:
+{{"action": "move" or "swap", "from_date": "YYYY-MM-DD or null", "to_date": "YYYY-MM-DD or null", "from_label": "Day X or weekday or null", "to_label": "Day X or weekday or null"}}
+"""
+    response = client.chat.completions.create(
+        model="llama-3.3-70b-versatile",
+        messages=[{"role": "user", "content": prompt}],
+        temperature=0,
+    )
+
+    raw = response.choices[0].message.content.strip()
+
+    # Extract JSON from response
+    json_match = re.search(r"\{.*\}", raw, re.DOTALL)
+    if not json_match:
+        return None
+    try:
+        data = json.loads(json_match.group())
+        return data
+    except json.JSONDecodeError:
+        return None

@@ -98,6 +98,105 @@
 /* grid */
 .wk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
 
+/* ── day navigation ── */
+.wk-day-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  background: var(--am-card);
+  border-radius: 16px;
+  padding: 14px 20px;
+  box-shadow: var(--am-sh-card);
+}
+
+.wk-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: var(--am-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.wk-nav-btn:hover:not(:disabled) { background: var(--am-purple); color: #fff; }
+.wk-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.wk-day-pills {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.wk-day-pills::-webkit-scrollbar { display: none; }
+
+.wk-pill {
+  padding: 8px 16px;
+  border: 2px solid #eef1f6;
+  border-radius: 24px;
+  background: #fff;
+  color: var(--am-text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.wk-pill:hover { border-color: var(--am-purple); color: var(--am-purple); }
+.wk-pill.active {
+  background: linear-gradient(135deg, var(--am-purple), #5a4bd1);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(108, 92, 231, 0.3);
+}
+
+/* ── single day card ── */
+.wk-single-card {
+  background: var(--am-card);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--am-sh-card);
+}
+
+.wk-single-top {
+  padding: 32px 36px 24px;
+  border-bottom: 1px solid var(--am-border);
+}
+
+.wk-single-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #f0ecfe, #e8e4fd);
+  color: #6c5ce7;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+}
+
+.wk-single-top h2 {
+  margin: 0 0 4px;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--am-text-dark);
+}
+
+.wk-single-sublabel {
+  margin: 0;
+  font-size: 14px;
+  color: var(--am-text-dim);
+}
+
+.wk-single-body { padding: 28px 36px 36px; }
+
 /* card */
 .wk-card {
   background: var(--am-card);
@@ -129,6 +228,235 @@
 .wk-card-arrow { color: #cbd5e1; font-size: 14px; transition: transform 0.25s, color 0.25s; }
 .wk-card:hover .wk-card-arrow { color: var(--accent); transform: translateX(4px); }
 
+/* ── two-column layout: workout card + tracker ── */
+.wk-content-row {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── progress tracker card ── */
+.wk-tracker {
+  background: var(--am-card);
+  border-radius: 20px;
+  box-shadow: var(--am-sh-card);
+  padding: 28px 26px;
+  position: sticky;
+  top: 24px;
+}
+
+.wk-tracker-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.wk-tracker-icon {
+  font-size: 20px;
+  color: var(--am-purple);
+}
+
+.wk-tracker-header h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--am-text-dark);
+}
+
+/* ring */
+.wk-tracker-ring-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 16px;
+}
+
+.wk-tracker-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.wk-tracker-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--am-text-dark);
+}
+
+.wk-trophy {
+  font-size: 32px;
+  color: #f59e0b;
+  animation: wk-pop 0.4s ease;
+}
+
+@keyframes wk-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.wk-tracker-count {
+  text-align: center;
+  font-size: 13px;
+  color: var(--am-text-dim);
+  margin: 0 0 20px;
+  font-weight: 500;
+}
+
+/* exercise checklist */
+.wk-tracker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wk-tracker-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--am-text);
+}
+
+.wk-tracker-item:hover { background: #f7f8fb; }
+.wk-tracker-item.done { color: var(--am-text-dim); }
+.wk-tracker-item.done .wk-tracker-text { text-decoration: line-through; opacity: 0.6; }
+
+.wk-tracker-item input[type="checkbox"] {
+  display: none;
+}
+
+.wk-tracker-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 7px;
+  border: 2px solid #d4d9e2;
+  background: #fff;
+  transition: all 0.2s;
+  color: #fff;
+  font-size: 12px;
+}
+
+.wk-tracker-item.done .wk-tracker-check {
+  background: linear-gradient(135deg, var(--am-purple), #5a4bd1);
+  border-color: transparent;
+}
+
+.wk-tracker-text {
+  flex: 1;
+  word-break: break-word;
+}
+
+.wk-tracker-cal {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--am-purple);
+  background: linear-gradient(135deg, #f0ecfe, #e8e4fd);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.wk-tracker-item.done .wk-tracker-cal {
+  background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+  color: #15803d;
+}
+
+/* ── calories card ── */
+.wk-calories-card {
+  background: linear-gradient(135deg, #faf5ff, #f3ecfe);
+  border: 1px solid #e9e0fc;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.wk-calories-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.wk-calories-icon {
+  font-size: 16px;
+  color: #e74c3c;
+}
+
+.wk-calories-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--am-text-dim);
+}
+
+.wk-calories-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.wk-calories-big {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--am-text-dark);
+  line-height: 1;
+}
+
+.wk-calories-total {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--am-text-dim);
+}
+
+.wk-calories-bar-bg {
+  height: 8px;
+  border-radius: 4px;
+  background: #e9e0fc;
+  overflow: hidden;
+}
+
+.wk-calories-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--am-purple), #e74c3c);
+  transition: width 0.5s ease;
+}
+
+/* complete banner */
+.wk-tracker-complete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 700;
+  animation: wk-pop 0.4s ease;
+}
+
 /* empty */
 .wk-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 40px; text-align: center; }
 .wk-empty-ring { display: flex; align-items: center; justify-content: center; width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #ede9fe, #dbeafe); color: var(--am-purple); margin-bottom: 28px; animation: wk-pulse 3s ease-in-out infinite; }
@@ -136,6 +464,23 @@
 .wk-empty p { margin: 0; max-width: 420px; font-size: 15px; line-height: 1.65; color: var(--am-text-dim); }
 
 /* responsive */
-@media (max-width: 1100px) { .wk-page { padding: 28px 24px 50px; } .wk-hero { padding: 36px 32px; } .wk-hero h1 { font-size: 30px; } .wk-hero-decoration { display: none; } }
-@media (max-width: 900px) { .wk-page { margin-left: 0; padding: 20px 16px 50px; } .wk-stats { flex-direction: column; } .wk-grid { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .wk-hero { padding: 28px 22px; border-radius: 18px; } .wk-hero h1 { font-size: 24px; } .wk-hero p { font-size: 13px; } }
+@media (max-width: 1100px) {
+  .wk-page { padding: 28px 24px 50px; }
+  .wk-hero { padding: 36px 32px; }
+  .wk-hero h1 { font-size: 30px; }
+  .wk-hero-decoration { display: none; }
+  .wk-content-row { grid-template-columns: 1fr 280px; }
+}
+@media (max-width: 900px) {
+  .wk-page { margin-left: 0; padding: 20px 16px 50px; }
+  .wk-stats { flex-direction: column; }
+  .wk-grid { grid-template-columns: 1fr; }
+  .wk-content-row { grid-template-columns: 1fr; }
+  .wk-tracker { position: static; }
+}
+@media (max-width: 600px) {
+  .wk-hero { padding: 28px 22px; border-radius: 18px; }
+  .wk-hero h1 { font-size: 24px; }
+  .wk-hero p { font-size: 13px; }
+  .wk-day-nav { flex-wrap: wrap; }
+}

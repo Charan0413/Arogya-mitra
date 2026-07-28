@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
+from pydantic import BaseModel
 
 from app.database import get_db
 from app.models import WeeklyPlan
@@ -86,3 +87,92 @@ def delete_weekly_plan(plan_id: int, db: Session = Depends(get_db)):
     db.delete(plan)
     db.commit()
     return {"message": "Plan deleted."}
+
+
+# ── Move / reschedule helpers ──
+
+class MovePlanRequest(BaseModel):
+    user_id: int
+    from_date: str   # YYYY-MM-DD
+    to_date: str     # YYYY-MM-DD
+
+
+@router.patch("/move")
+def move_plan_entry(data: MovePlanRequest, db: Session = Depends(get_db)):
+    """Move a plan entry from one date to another."""
+    entry = (
+        db.query(WeeklyPlan)
+        .filter(
+            WeeklyPlan.user_id == data.user_id,
+            WeeklyPlan.plan_date == data.from_date,
+        )
+        .first()
+    )
+    if not entry:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No plan found on {data.from_date}.",
+        )
+
+    # Check if target date already has an entry
+    existing = (
+        db.query(WeeklyPlan)
+        .filter(
+            WeeklyPlan.user_id == data.user_id,
+            WeeklyPlan.plan_date == data.to_date,
+        )
+        .first()
+    )
+    if existing:
+        raise HTTPException(
+            status_code=409,
+            detail=f"Date {data.to_date} already has a plan. Delete or move that one first.",
+        )
+
+    old_date = entry.plan_date
+    entry.plan_date = data.to_date
+    db.commit()
+
+    return {
+        "message": f"Plan moved from {old_date} to {data.to_date}.",
+        "entry": {
+            "id": entry.id,
+            "day_label": entry.day_label,
+            "plan_date": entry.plan_date,
+        },
+    }
+
+
+@router.patch("/swap")
+def swap_plan_dates(data: MovePlanRequest, db: Session = Depends(get_db)):
+    """Swap two plan entries' dates."""
+    entry_a = (
+        db.query(WeeklyPlan)
+        .filter(
+            WeeklyPlan.user_id == data.user_id,
+            WeeklyPlan.plan_date == data.from_date,
+        )
+        .first()
+    )
+    entry_b = (
+        db.query(WeeklyPlan)
+        .filter(
+            WeeklyPlan.user_id == data.user_id,
+            WeeklyPlan.plan_date == data.to_date,
+        )
+        .first()
+    )
+
+    if not entry_a and not entry_b:
+        raise HTTPException(status_code=404, detail="No plans found on either date.")
+    if not entry_a:
+        raise HTTPException(status_code=404, detail=f"No plan found on {data.from_date}.")
+    if not entry_b:
+        raise HTTPException(status_code=404, detail=f"No plan found on {data.to_date}.")
+
+    entry_a.plan_date, entry_b.plan_date = entry_b.plan_date, entry_a.plan_date
+    db.commit()
+
+    return {
+        "message": f"Swapped {data.from_date} and {data.to_date}.",
+    }

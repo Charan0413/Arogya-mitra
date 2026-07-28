@@ -82,6 +82,348 @@
 /* grid */
 .nut-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 24px; }
 
+/* ── day navigation ── */
+.nut-day-nav {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+  background: var(--am-card);
+  border-radius: 16px;
+  padding: 14px 20px;
+  box-shadow: var(--am-sh-card);
+}
+
+.nut-nav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 10px;
+  background: #f1f5f9;
+  color: var(--am-text);
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.nut-nav-btn:hover:not(:disabled) { background: var(--am-teal); color: #fff; }
+.nut-nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.nut-day-pills {
+  display: flex;
+  gap: 6px;
+  flex: 1;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.nut-day-pills::-webkit-scrollbar { display: none; }
+
+.nut-pill {
+  padding: 8px 16px;
+  border: 2px solid #eef1f6;
+  border-radius: 24px;
+  background: #fff;
+  color: var(--am-text-dim);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.nut-pill:hover { border-color: var(--am-teal); color: var(--am-teal); }
+.nut-pill.active {
+  background: linear-gradient(135deg, var(--am-teal), #00b894);
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 4px 12px rgba(0,184,148,0.3);
+}
+
+/* ── single day card ── */
+.nut-single-card {
+  background: var(--am-card);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: var(--am-sh-card);
+}
+
+.nut-single-top {
+  padding: 32px 36px 24px;
+  border-bottom: 1px solid var(--am-border);
+}
+
+.nut-single-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #d1fae5, #c3fae8);
+  color: #00b894;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin-bottom: 12px;
+}
+
+.nut-single-top h2 {
+  margin: 0 0 4px;
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--am-text-dark);
+}
+
+.nut-single-sublabel {
+  margin: 0;
+  font-size: 14px;
+  color: var(--am-text-dim);
+}
+
+.nut-single-body { padding: 28px 36px 36px; }
+
+/* ── two-column layout: nutrition card + tracker ── */
+.nut-content-row {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+/* ── meal tracker card ── */
+.nut-tracker {
+  background: var(--am-card);
+  border-radius: 20px;
+  box-shadow: var(--am-sh-card);
+  padding: 28px 26px;
+  position: sticky;
+  top: 24px;
+}
+
+.nut-tracker-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.nut-tracker-icon {
+  font-size: 20px;
+  color: var(--am-teal);
+}
+
+.nut-tracker-header h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--am-text-dark);
+}
+
+/* ring */
+.nut-tracker-ring-wrap {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin: 0 auto 16px;
+}
+
+.nut-tracker-ring {
+  width: 100%;
+  height: 100%;
+}
+
+.nut-tracker-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--am-text-dark);
+}
+
+.nut-trophy {
+  font-size: 32px;
+  color: #f59e0b;
+  animation: nut-pop 0.4s ease;
+}
+
+@keyframes nut-pop {
+  0% { transform: scale(0.5); opacity: 0; }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.nut-tracker-count {
+  text-align: center;
+  font-size: 13px;
+  color: var(--am-text-dim);
+  margin: 0 0 20px;
+  font-weight: 500;
+}
+
+/* ── calories consumed card ── */
+.nut-calories-card {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid #a7f3d0;
+  border-radius: 16px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+}
+
+.nut-calories-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.nut-calories-icon {
+  font-size: 16px;
+  color: #00b894;
+}
+
+.nut-calories-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--am-text-dim);
+}
+
+.nut-calories-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.nut-calories-big {
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--am-text-dark);
+  line-height: 1;
+}
+
+.nut-calories-total {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--am-text-dim);
+}
+
+.nut-calories-bar-bg {
+  height: 8px;
+  border-radius: 4px;
+  background: #a7f3d0;
+  overflow: hidden;
+}
+
+.nut-calories-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--am-teal), #00b894);
+  transition: width 0.5s ease;
+}
+
+/* meal checklist */
+.nut-tracker-list {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.nut-tracker-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--am-text);
+}
+
+.nut-tracker-item:hover { background: #f7f8fb; }
+.nut-tracker-item.done { color: var(--am-text-dim); }
+.nut-tracker-item.done .nut-tracker-text { text-decoration: line-through; opacity: 0.6; }
+
+.nut-tracker-item input[type="checkbox"] { display: none; }
+
+.nut-tracker-check {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
+  border-radius: 7px;
+  border: 2px solid #d4d9e2;
+  background: #fff;
+  transition: all 0.2s;
+  color: #fff;
+  font-size: 12px;
+  margin-top: 1px;
+}
+
+.nut-tracker-item.done .nut-tracker-check {
+  background: linear-gradient(135deg, var(--am-teal), #00b894);
+  border-color: transparent;
+}
+
+.nut-tracker-meal-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.nut-tracker-text {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.nut-tracker-details {
+  font-size: 11px;
+  color: var(--am-text-dim);
+  line-height: 1.4;
+}
+
+.nut-tracker-cal {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--am-teal);
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  padding: 3px 10px;
+  border-radius: 20px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.nut-tracker-item.done .nut-tracker-cal {
+  background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+  color: #15803d;
+}
+
+/* complete banner */
+.nut-tracker-complete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  padding: 12px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #d1fae5, #bbf7d0);
+  color: #15803d;
+  font-size: 13px;
+  font-weight: 700;
+  animation: nut-pop 0.4s ease;
+}
+
 /* card */
 .nut-card { background: var(--am-card); border-radius: 20px; overflow: hidden; box-shadow: var(--am-sh-card); display: flex; flex-direction: column; transition: transform 0.3s, box-shadow 0.3s; position: relative; }
 .nut-card::before { content:""; position: absolute; inset: 0; border-radius: 20px; border: 2px solid transparent; transition: border-color 0.3s; pointer-events: none; }
@@ -110,6 +452,6 @@
 .nut-empty p { margin: 0; max-width: 420px; font-size: 15px; line-height: 1.65; color: var(--am-text-dim); }
 
 /* responsive */
-@media (max-width: 1100px) { .nut-page { padding: 28px 24px 50px; } .nut-hero { padding: 36px 32px; } .nut-hero h1 { font-size: 30px; } .nut-hero-deco { display: none; } }
-@media (max-width: 900px) { .nut-page { margin-left: 0; padding: 20px 16px 50px; } .nut-stats { flex-direction: column; } .nut-grid { grid-template-columns: 1fr; } }
-@media (max-width: 600px) { .nut-hero { padding: 28px 22px; border-radius: 18px; } .nut-hero h1 { font-size: 24px; } .nut-hero p { font-size: 13px; } }
+@media (max-width: 1100px) { .nut-page { padding: 28px 24px 50px; } .nut-hero { padding: 36px 32px; } .nut-hero h1 { font-size: 30px; } .nut-hero-deco { display: none; } .nut-content-row { grid-template-columns: 1fr 280px; } }
+@media (max-width: 900px) { .nut-page { margin-left: 0; padding: 20px 16px 50px; } .nut-stats { flex-direction: column; } .nut-grid { grid-template-columns: 1fr; } .nut-content-row { grid-template-columns: 1fr; } .nut-tracker { position: static; } }
+@media (max-width: 600px) { .nut-hero { padding: 28px 22px; border-radius: 18px; } .nut-hero h1 { font-size: 24px; } .nut-hero p { font-size: 13px; } .nut-day-nav { flex-wrap: wrap; } }
