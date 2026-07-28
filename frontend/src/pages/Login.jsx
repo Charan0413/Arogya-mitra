@@ -8,16 +8,21 @@ function Login() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
       const res = await api.post("/auth/login", { email, password });
       localStorage.setItem("token", res.data.access_token);
       localStorage.setItem("user_id", res.data.user_id);
       localStorage.setItem("full_name", res.data.full_name);
 
-      // Check if health profile already exists for this user
+      // Check if health profile already exists
       try {
         const healthCheck = await api.get(`/health/check/${res.data.user_id}`);
         if (healthCheck.data.exists) {
@@ -26,12 +31,14 @@ function Login() {
           window.location.replace("/health");
         }
       } catch {
-        // If check fails, default to health form
         window.location.replace("/health");
       }
     } catch (err) {
-      alert("Invalid Email or Password");
-      console.error(err);
+      const msg =
+        err.response?.data?.detail ||
+        "Invalid email or password. Please try again.";
+      setError(msg);
+      setLoading(false);
     }
   };
 
@@ -71,12 +78,15 @@ function Login() {
           <h2>Sign in to your account</h2>
           <p className="auth-subtitle">Enter your credentials to continue</p>
 
+          {error && <div className="auth-error">{error}</div>}
+
           <form onSubmit={handleLogin}>
             <div className="auth-field">
               <label>Email</label>
               <input
                 type="email"
                 placeholder="you@example.com"
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
@@ -86,11 +96,18 @@ function Login() {
               <input
                 type="password"
                 placeholder="Enter your password"
+                value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-            <button type="submit" className="auth-submit">Login</button>
+            <button
+              type="submit"
+              className="auth-submit"
+              disabled={loading}
+            >
+              {loading ? "Signing in..." : "Login"}
+            </button>
           </form>
 
           <p className="auth-switch">

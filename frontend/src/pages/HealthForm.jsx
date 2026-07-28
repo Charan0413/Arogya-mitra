@@ -6,6 +6,8 @@ import "./HealthForm.css";
 
 function HealthForm() {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     user_id: Number(localStorage.getItem("user_id")),
     age: "",
@@ -27,13 +29,18 @@ function HealthForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setLoading(true);
+
     try {
       await api.post("/health/submit", formData);
-      alert("Health Assessment Saved Successfully!");
-      navigate("/dashboard");
+      window.location.replace("/dashboard");
     } catch (err) {
-      console.error(err);
-      alert("Failed to Save Health Assessment");
+      const msg =
+        err.response?.data?.detail ||
+        "Failed to save health assessment. Please try again.";
+      setError(msg);
+      setLoading(false);
     }
   };
 
@@ -55,6 +62,8 @@ function HealthForm() {
       {/* form card */}
       <div className="health-form-wrapper">
         <form className="health-form-card" onSubmit={handleSubmit}>
+          {error && <div className="auth-error">{error}</div>}
+
           {/* section: basics */}
           <div className="health-section-title">Basic Information</div>
           <div className="health-grid">
@@ -118,8 +127,16 @@ function HealthForm() {
             </div>
           </div>
 
-          <button type="submit" className="auth-submit health-submit">
-            <FaCheckCircle size={16} /> Save Assessment
+          <button
+            type="submit"
+            className="auth-submit health-submit"
+            disabled={loading}
+          >
+            {loading ? (
+              "Saving..."
+            ) : (
+              <><FaCheckCircle size={16} /> Save Assessment</>
+            )}
           </button>
         </form>
       </div>

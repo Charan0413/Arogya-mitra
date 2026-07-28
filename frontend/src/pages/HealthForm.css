@@ -150,6 +150,26 @@
   margin-right: auto;
 }
 
+.health-submit:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ── inline error ── */
+.health-form-card .auth-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  border-radius: 10px;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #dc2626;
+  line-height: 1.5;
+}
+
 /* ── responsive ── */
 @media (max-width: 700px) {
   .health-hero {

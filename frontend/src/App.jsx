@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Login from "./pages/Login";
@@ -9,8 +10,20 @@ import NutritionPage from "./pages/NutritionPage";
 import WeeklyPlanPage from "./pages/WeeklyPlanPage";
 import CalendarPage from "./pages/CalendarPage";
 
-function App() {
+function ProtectedRoute({ children }) {
   const token = localStorage.getItem("token");
+  return token ? children : <Navigate to="/" />;
+}
+
+function App() {
+  const [token, setToken] = useState(() => localStorage.getItem("token"));
+
+  /* re-read token when localStorage changes (login / logout) */
+  useEffect(() => {
+    const onStorage = () => setToken(localStorage.getItem("token"));
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   return (
     <BrowserRouter>
@@ -23,42 +36,32 @@ function App() {
 
         <Route
           path="/register"
-          element={<Register />}
+          element={token ? <Navigate to="/dashboard" /> : <Register />}
         />
 
-        <Route
-          path="/health"
-          element={token ? <HealthForm /> : <Navigate to="/" />}
-        />
+        <Route path="/health" element={
+          <ProtectedRoute><HealthForm /></ProtectedRoute>
+        } />
 
-        <Route
-          path="/dashboard"
-          element={token ? <Dashboard /> : <Navigate to="/" />}
-        />
+        <Route path="/dashboard" element={
+          <ProtectedRoute><Dashboard /></ProtectedRoute>
+        } />
 
-        {/* Workout Plan Page */}
-        <Route
-          path="/workout-plan"
-          element={token ? <WorkoutPage /> : <Navigate to="/" />}
-        />
+        <Route path="/workout-plan" element={
+          <ProtectedRoute><WorkoutPage /></ProtectedRoute>
+        } />
 
-        {/* Nutrition Plan Page */}
-        <Route
-          path="/nutrition-plan"
-          element={token ? <NutritionPage /> : <Navigate to="/" />}
-        />
+        <Route path="/nutrition-plan" element={
+          <ProtectedRoute><NutritionPage /></ProtectedRoute>
+        } />
 
-        {/* Weekly Plan Page */}
-        <Route
-          path="/weekly-plan"
-          element={token ? <WeeklyPlanPage /> : <Navigate to="/" />}
-        />
+        <Route path="/weekly-plan" element={
+          <ProtectedRoute><WeeklyPlanPage /></ProtectedRoute>
+        } />
 
-        {/* Calendar Page */}
-        <Route
-          path="/calendar"
-          element={token ? <CalendarPage /> : <Navigate to="/" />}
-        />
+        <Route path="/calendar" element={
+          <ProtectedRoute><CalendarPage /></ProtectedRoute>
+        } />
 
       </Routes>
     </BrowserRouter>

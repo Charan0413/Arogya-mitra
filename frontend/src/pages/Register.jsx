@@ -1,25 +1,48 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import api from "../services/api";
 import { FaUserPlus, FaDumbbell, FaBolt } from "react-icons/fa";
 import "../pages/Login.css";
 import "./Register.css";
 
 function Register() {
-  const navigate = useNavigate();
   const [full_name, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+
+    // ── client-side password validation ──
+    if (password.length < 6) {
+      setError("Password must be at least 6 characters");
+      return;
+    }
+
+    setLoading(true);
+
     try {
-      await api.post("/auth/register", { full_name, email, password });
-      alert("Registration Successful!");
-      navigate("/");
-    } catch (error) {
-      console.error(error);
-      alert("Registration Failed");
+      const res = await api.post("/auth/register", {
+        full_name,
+        email,
+        password,
+      });
+
+      // ── auto-login: backend now returns token ──
+      localStorage.setItem("token", res.data.access_token);
+      localStorage.setItem("user_id", res.data.user_id);
+      localStorage.setItem("full_name", res.data.full_name);
+
+      // ── new user → go straight to health form ──
+      window.location.replace("/health");
+    } catch (err) {
+      const msg =
+        err.response?.data?.detail || "Registration failed. Please try again.";
+      setError(msg);
+      setLoading(false);
     }
   };
 
@@ -61,6 +84,8 @@ function Register() {
           <h2>Join ArogyaMitra</h2>
           <p className="auth-subtitle">Create your free account to get started</p>
 
+          {error && <div className="auth-error">{error}</div>}
+
           <form onSubmit={handleRegister}>
             <div className="auth-field">
               <label>Full Name</label>
@@ -89,10 +114,17 @@ function Register() {
                 placeholder="Min 6 characters"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                minLength={6}
                 required
               />
             </div>
-            <button type="submit" className="auth-submit">Create Account</button>
+            <button
+              type="submit"
+              className="auth-submit"
+              disabled={loading}
+            >
+              {loading ? "Creating account..." : "Create Account"}
+            </button>
           </form>
 
           <p className="auth-switch">

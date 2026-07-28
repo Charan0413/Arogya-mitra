@@ -16,6 +16,13 @@ router = APIRouter(
 @router.post("/register")
 def register(user: UserRegister, db: Session = Depends(get_db)):
 
+    # ── password validation ──
+    if len(user.password) < 6:
+        raise HTTPException(
+            status_code=400,
+            detail="Password must be at least 6 characters"
+        )
+
     existing_user = db.query(User).filter(User.email == user.email).first()
 
     if existing_user:
@@ -34,8 +41,15 @@ def register(user: UserRegister, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
+    # ── auto-login: return token so frontend can skip re-entering credentials ──
+    token = create_access_token({"sub": new_user.email})
+
     return {
-        "message": "User registered successfully"
+        "message": "User registered successfully",
+        "access_token": token,
+        "token_type": "bearer",
+        "user_id": new_user.id,
+        "full_name": new_user.full_name,
     }
 
 
@@ -63,8 +77,8 @@ def login(user: UserLogin, db: Session = Depends(get_db)):
     )
 
     return {
-    "access_token": token,
-    "token_type": "bearer",
-    "user_id": db_user.id,
-    "full_name": db_user.full_name
-}
+        "access_token": token,
+        "token_type": "bearer",
+        "user_id": db_user.id,
+        "full_name": db_user.full_name
+    }
