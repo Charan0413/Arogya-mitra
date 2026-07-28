@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
 from app.database import get_db
@@ -12,7 +12,7 @@ router = APIRouter(
 
 
 @router.get("/{user_id}")
-def get_nutrition(user_id: int, db: Session = Depends(get_db)):
+def get_nutrition(user_id: int, days: int = Query(default=5, ge=1, le=14), db: Session = Depends(get_db)):
 
     profile = (
         db.query(HealthAssessment)
@@ -26,8 +26,8 @@ def get_nutrition(user_id: int, db: Session = Depends(get_db)):
             detail="Health profile not found"
         )
 
-    # Generate AI nutrition plan
-    nutrition = generate_nutrition(profile)
+    # Generate AI nutrition plan with dynamic day count
+    nutrition = generate_nutrition(profile, f"Generate a {days}-day nutrition plan")
 
     # Check if a nutrition plan already exists
     saved_plan = (

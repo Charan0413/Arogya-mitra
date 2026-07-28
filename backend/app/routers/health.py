@@ -11,6 +11,17 @@ router = APIRouter(
 )
 
 
+@router.get("/check/{user_id}")
+def check_health(user_id: int, db: Session = Depends(get_db)):
+    """Check if a user has already submitted their health assessment."""
+    existing = (
+        db.query(HealthAssessment)
+        .filter(HealthAssessment.user_id == user_id)
+        .first()
+    )
+    return {"exists": existing is not None}
+
+
 @router.post("/submit")
 def submit_health(data: HealthCreate, db: Session = Depends(get_db)):
 

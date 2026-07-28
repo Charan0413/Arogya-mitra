@@ -6,6 +6,7 @@ from app.models import (
     HealthAssessment,
     WorkoutPlan,
     NutritionPlan,
+    WeeklyPlan,
 )
 from app.schemas import ChatRequest
 from app.services.groq_service import (
@@ -44,7 +45,7 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)):
     # -----------------------------
     if intent == "generate_workout":
 
-        workout = generate_workout(profile)
+        workout = generate_workout(profile, request.message)
 
         saved = (
             db.query(WorkoutPlan)
@@ -60,6 +61,11 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)):
                 plan=workout
             )
             db.add(saved)
+
+        # Clear stale calendar entries so they match the new plan
+        db.query(WeeklyPlan).filter(
+            WeeklyPlan.user_id == request.user_id
+        ).delete()
 
         db.commit()
 
@@ -90,6 +96,12 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)):
         )
 
         saved.plan = updated
+
+        # Clear stale calendar entries — user must re-save
+        db.query(WeeklyPlan).filter(
+            WeeklyPlan.user_id == request.user_id
+        ).delete()
+
         db.commit()
 
         return {
@@ -102,7 +114,7 @@ def chat(request: ChatRequest, db: Session = Depends(get_db)):
     # -----------------------------
     elif intent == "generate_nutrition":
 
-        nutrition = generate_nutrition(profile)
+        nutrition = generate_nutrition(profile, request.message)
 
         saved = (
             db.query(NutritionPlan)

@@ -1,21 +1,199 @@
-body {
-  background: #eef4ff;
+/* ═══════════════════════════════════════════════
+   Dashboard — premium design system
+   ═══════════════════════════════════════════════ */
+
+.dash-page {
+  margin-left: 260px;
+  padding: 36px 44px 60px;
+  min-height: 100vh;
+  background: linear-gradient(170deg, #f0f2f8 0%, #e8ecf4 100%);
+  font-family: var(--am-font);
 }
 
-.dashboard {
-  max-width: 1300px;
-  margin: 30px auto;
-  padding: 20px;
+/* ── hero ── */
+.dash-hero {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  border-radius: var(--am-r-xl);
+  padding: 44px 48px;
+  overflow: hidden;
+  margin-bottom: 28px;
+  box-shadow: var(--am-sh-hero);
 }
 
-.card-grid {
+.dash-hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 580px;
+}
+
+.dash-hero h1 {
+  margin: 0 0 12px;
+  font-size: 36px;
+  font-weight: 800;
+  color: #ffffff;
+  letter-spacing: -0.5px;
+  line-height: 1.15;
+}
+
+.dash-hero p {
+  font-size: 15px;
+  line-height: 1.65;
+  color: #a0aec0;
+}
+
+.dash-hero p strong {
+  color: var(--am-purple-l);
+}
+
+/* hero decoration */
+.dash-hero-deco {
+  position: relative;
+  width: 160px;
+  height: 160px;
+  flex-shrink: 0;
+}
+
+.dash-circle {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.dash-c1 {
+  width: 140px;
+  height: 140px;
+  background: rgba(108, 92, 231, 0.12);
+  top: 10px;
+  right: 10px;
+  animation: dash-pulse 3s ease-in-out infinite;
+}
+
+.dash-c2 {
+  width: 90px;
+  height: 90px;
+  background: rgba(9, 132, 227, 0.1);
+  bottom: 10px;
+  left: 10px;
+  animation: dash-pulse 3s ease-in-out infinite 0.6s;
+}
+
+.dash-hero-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--am-purple-l);
+  z-index: 2;
+  filter: drop-shadow(0 4px 20px rgba(108, 92, 231, 0.4));
+}
+
+@keyframes dash-pulse {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.08); opacity: 0.6; }
+}
+
+/* ── quick actions grid ── */
+.dash-actions {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 25px;
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.dash-action-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 26px;
+  background: var(--am-card);
+  border-radius: var(--am-r-lg);
+  box-shadow: var(--am-sh-card);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-action-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--am-r-lg);
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+  pointer-events: none;
+}
+
+.dash-action-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--am-sh-card-h);
+}
+
+.dash-action-card:hover::before {
+  border-color: var(--am-purple);
+}
+
+.dash-action-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  flex-shrink: 0;
+}
+
+.dash-ic-blue   { background: #eff6ff; color: #2563eb; }
+.dash-ic-green  { background: #f0fdf4; color: #16a34a; }
+.dash-ic-purple { background: #f5f3ff; color: #7c3aed; }
+.dash-ic-coral  { background: #fff7ed; color: #ea580c; }
+
+.dash-action-text {
+  flex: 1;
+}
+
+.dash-action-text h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--am-text-dark);
+}
+
+.dash-action-text p {
+  margin: 4px 0 0;
+  font-size: 13px;
+  color: var(--am-text-dim);
+}
+
+.dash-action-arrow {
+  color: #cbd5e1;
+  font-size: 14px;
+  transition: transform 0.25s ease, color 0.25s ease;
+}
+
+.dash-action-card:hover .dash-action-arrow {
+  color: var(--am-purple);
+  transform: translateX(4px);
+}
+
+/* ═══ responsive ═══ */
+@media (max-width: 1100px) {
+  .dash-page { padding: 28px 24px 50px; }
+  .dash-hero { padding: 36px 32px; }
+  .dash-hero h1 { font-size: 30px; }
+  .dash-hero-deco { display: none; }
 }
 
 @media (max-width: 900px) {
-  .card-grid {
-    grid-template-columns: 1fr;
-  }
+  .dash-page { margin-left: 0; padding: 20px 16px 50px; }
+  .dash-actions { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .dash-hero { padding: 28px 22px; border-radius: 18px; }
+  .dash-hero h1 { font-size: 24px; }
+  .dash-hero p { font-size: 13px; }
 }

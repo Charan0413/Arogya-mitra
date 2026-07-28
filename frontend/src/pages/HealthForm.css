@@ -1,34 +1,171 @@
-.health-container{
-    display:flex;
-    justify-content:center;
-    padding:40px;
-    background:#f5f8ff;
+/* ═══════════════════════════════════════════════
+   Health Form — hero + sectioned form card
+   ═══════════════════════════════════════════════ */
+
+.health-page {
+  min-height: 100vh;
+  background: var(--am-bg);
+  padding-bottom: 60px;
 }
 
-.health-card{
-    width:600px;
-    background:white;
-    padding:30px;
-    border-radius:15px;
-    box-shadow:0 8px 20px rgba(0,0,0,.15);
+/* ── hero ── */
+.health-hero {
+  position: relative;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  padding: 72px 60px 64px;
+  overflow: hidden;
 }
 
-.health-card h1{
-    text-align:center;
-    margin-bottom:20px;
+.health-hero-inner {
+  position: relative;
+  z-index: 2;
+  max-width: 640px;
 }
 
-.health-card input,
-.health-card select{
-    width:100%;
-    padding:12px;
-    margin:10px 0;
+.health-hero h1 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #fff;
+  margin-top: 16px;
+  margin-bottom: 10px;
+  letter-spacing: -0.5px;
 }
 
-.health-card button{
-    width:100%;
-    padding:14px;
-    background:#2563eb;
-    color:white;
-    border:none;
+.health-hero p {
+  font-size: 16px;
+  color: rgba(162, 155, 254, 0.75);
+  line-height: 1.6;
+  max-width: 520px;
+}
+
+.health-hero-circle {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid rgba(108, 92, 231, 0.15);
+}
+
+.health-hc1 {
+  width: 260px;
+  height: 260px;
+  top: -60px;
+  right: 80px;
+  background: rgba(108, 92, 231, 0.06);
+}
+
+.health-hc2 {
+  width: 160px;
+  height: 160px;
+  bottom: -30px;
+  right: 200px;
+  background: rgba(108, 92, 231, 0.05);
+}
+
+/* ── form wrapper ── */
+.health-form-wrapper {
+  max-width: 800px;
+  margin: -32px auto 0;
+  padding: 0 40px;
+  position: relative;
+  z-index: 3;
+}
+
+.health-form-card {
+  background: var(--am-card);
+  border-radius: var(--am-r-xl);
+  padding: 44px 40px;
+  box-shadow: var(--am-sh-card);
+}
+
+/* ── section titles ── */
+.health-section-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  color: var(--am-purple);
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1.5px solid var(--am-border);
+}
+
+/* ── grid ── */
+.health-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 24px;
+  margin-bottom: 36px;
+}
+
+.health-grid-full {
+  grid-template-columns: 1fr;
+}
+
+.health-grid-full .auth-field + .auth-field {
+  margin-top: 0;
+}
+
+/* ── reuse auth-field styles from Login.css ── */
+.health-page .auth-field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--am-text-dark);
+  margin-bottom: 8px;
+}
+
+.health-page .auth-field input,
+.health-page .auth-field select {
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--am-border);
+  border-radius: var(--am-r-sm);
+  font-size: 15px;
+  font-family: var(--am-font);
+  color: var(--am-text-dark);
+  background: #fafbff;
+  transition: border-color 0.25s, box-shadow 0.25s;
+  outline: none;
+}
+
+.health-page .auth-field input::placeholder {
+  color: var(--am-text-dim);
+}
+
+.health-page .auth-field input:focus,
+.health-page .auth-field select:focus {
+  border-color: var(--am-purple);
+  box-shadow: 0 0 0 4px rgba(108, 92, 231, 0.1);
+  background: #fff;
+}
+
+/* ── submit ── */
+.health-submit {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  max-width: 320px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ── responsive ── */
+@media (max-width: 700px) {
+  .health-hero {
+    padding: 52px 28px 48px;
+  }
+  .health-hero h1 {
+    font-size: 28px;
+  }
+  .health-form-wrapper {
+    padding: 0 16px;
+    margin-top: -24px;
+  }
+  .health-form-card {
+    padding: 32px 24px;
+  }
+  .health-grid {
+    grid-template-columns: 1fr;
+  }
 }

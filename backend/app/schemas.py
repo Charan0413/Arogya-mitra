@@ -75,3 +75,33 @@ class NutritionPlanResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# ==========================
+# Weekly Plan
+# ==========================
+
+class WeeklyPlanDayCreate(BaseModel):
+    user_id: int
+    title: str = "Weekly Plan"
+    day_label: str
+    plan_data: str
+    nutrition_data: str = ""
+    plan_date: str
+
+
+class WeeklyPlanCreate(BaseModel):
+    days: list[WeeklyPlanDayCreate]
+
+
+class WeeklyPlanResponse(BaseModel):
+    id: int
+    user_id: int
+    title: str
+    day_label: str
+    plan_data: str
+    plan_date: str
+    created_at: str
+
+    class Config:
+        from_attributes = True

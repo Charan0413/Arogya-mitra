@@ -13,11 +13,25 @@ print("API Key:", api_key)
 
 client = Groq(api_key=api_key)
 
-def generate_workout(profile):
+import re
+
+
+def _extract_days(message):
+    """Extract the number of days from a user message. Defaults to 5."""
+    m = re.search(r"(\d+)\s*-?\s*day", message, re.IGNORECASE)
+    if m:
+        n = int(m.group(1))
+        if 1 <= n <= 14:
+            return n
+    return 5
+
+
+def generate_workout(profile, user_message=""):
+    days = _extract_days(user_message)
     prompt = f"""
 You are an expert fitness coach.
 
-Generate a personalized 7-day workout plan.
+Generate a personalized {days}-day workout plan.
 
 User Details:
 Age: {profile.age}
@@ -54,12 +68,12 @@ Format the answer clearly.
 
     return response.choices[0].message.content
 
-def generate_nutrition(profile):
-
+def generate_nutrition(profile, user_message=""):
+    days = _extract_days(user_message)
     prompt = f"""
 You are an expert nutritionist.
 
-Create a personalized 7-day healthy meal plan.
+Create a personalized {days}-day healthy meal plan.
 
 User Details:
 Age: {profile.age}
@@ -165,14 +179,16 @@ Below is the user's CURRENT workout plan.
 {current_plan}
 -------------------------
 
-Modify ONLY according to this request:
+Modify according to this request:
 
 {instruction}
 
 Rules:
-- Keep the same format.
-- Modify only what the user requested.
-- Return the COMPLETE updated workout plan.
+- Return the COMPLETE updated plan — nothing omitted.
+- If the user asks to reduce or increase the number of days, actually add or remove day sections. Do NOT keep all original days.
+- If the user asks to change exercises, replace them in-place.
+- Keep the same heading format (Day 1, Day 2, etc.) renumbered if days changed.
+- Do NOT include any text outside the plan itself — no greetings, no explanations, no markdown.
 """
 
     response = client.chat.completions.create(
@@ -199,14 +215,16 @@ Below is the user's CURRENT nutrition plan.
 {current_plan}
 -------------------------
 
-Modify ONLY according to this request:
+Modify according to this request:
 
 {instruction}
 
 Rules:
-- Keep the same format.
-- Change only what the user requested.
-- Return the COMPLETE updated nutrition plan.
+- Return the COMPLETE updated plan — nothing omitted.
+- If the user asks to reduce or increase the number of days, actually add or remove day sections. Do NOT keep all original days.
+- If the user asks to change meals, replace them in-place.
+- Keep the same heading format (Day 1, Day 2, etc.) renumbered if days changed.
+- Do NOT include any text outside the plan itself — no greetings, no explanations, no markdown.
 """
 
     response = client.chat.completions.create(
@@ -222,6 +240,17 @@ Rules:
 
     return response.choices[0].message.content
 
+import re
+
+_VALID_INTENTS = [
+    "general_chat",
+    "generate_workout",
+    "modify_workout",
+    "generate_nutrition",
+    "modify_nutrition",
+]
+
+
 def classify_intent(message):
 
     prompt = f"""
@@ -229,7 +258,7 @@ You are an intent classifier for an AI Health Coach.
 
 Classify the user's request into EXACTLY ONE of these intents.
 
-Return ONLY the intent name.
+Return ONLY the intent name — no quotes, no explanation, no punctuation.
 
 general_chat
 generate_workout
@@ -247,6 +276,12 @@ Generate a gym routine
 
 Replace squats with lunges
 -> modify_workout
+
+Make Day 3 easier
+-> modify_workout
+
+Increase protein
+-> modify_nutrition
 
 Generate a meal plan
 -> generate_nutrition
@@ -272,4 +307,23 @@ User:
         temperature=0,
     )
 
-    return response.choices[0].message.content.strip().lower()
+    raw = response.choices[0].message.content.strip().lower()
+
+    # ── Robust cleaning ──────────────────────────────
+    # Strip common LLM formatting: backticks, quotes,
+    # asterisks, trailing periods/colons, leading labels.
+    cleaned = re.sub(r"[*`\"']", "", raw).strip()
+    cleaned = re.sub(r"[.:;]+$", "", cleaned).strip()
+    cleaned = re.sub(r"^(intent|answer|output|response)\s*:\s*", "", cleaned).strip()
+
+    # Exact match (most common case)
+    if cleaned in _VALID_INTENTS:
+        return cleaned
+
+    # Fallback: check if any valid intent appears as a substring
+    for intent in _VALID_INTENTS:
+        if intent in cleaned:
+            return intent
+
+    # Nothing matched — default to general chat
+    return "general_chat"

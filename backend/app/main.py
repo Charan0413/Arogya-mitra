@@ -10,6 +10,7 @@ from app.routers import ai_chat
 from app.routers import calendar
 from app.routers import workout_plan
 from app.routers import nutrition_plan
+from app.routers import weekly_plan
 
 Base.metadata.create_all(bind=engine)
 
@@ -35,6 +36,7 @@ app.include_router(ai_chat.router)
 app.include_router(calendar.router)
 app.include_router(workout_plan.router)
 app.include_router(nutrition_plan.router)
+app.include_router(weekly_plan.router)
 
 @app.get("/")
 def home():

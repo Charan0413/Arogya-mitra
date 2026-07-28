@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../services/api";
+import { FaHeartbeat, FaCheckCircle } from "react-icons/fa";
 import "./HealthForm.css";
 
 function HealthForm() {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
-  user_id: Number(localStorage.getItem("user_id")),
+    user_id: Number(localStorage.getItem("user_id")),
     age: "",
     gender: "",
     height: "",
@@ -22,20 +22,14 @@ function HealthForm() {
   });
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       await api.post("/health/submit", formData);
-
       alert("Health Assessment Saved Successfully!");
-
       navigate("/dashboard");
     } catch (err) {
       console.error(err);
@@ -44,101 +38,89 @@ function HealthForm() {
   };
 
   return (
-    <div className="health-container">
-      <div className="health-card">
-        <h1>Health Assessment</h1>
+    <div className="health-page">
+      {/* hero */}
+      <div className="health-hero">
+        <div className="health-hero-inner">
+          <span className="am-badge">
+            <FaHeartbeat size={11} /> HEALTH PROFILE
+          </span>
+          <h1>Health Assessment</h1>
+          <p>Tell us about yourself so we can personalise your fitness & nutrition plan</p>
+        </div>
+        <div className="health-hero-circle health-hc1" />
+        <div className="health-hero-circle health-hc2" />
+      </div>
 
-        <form onSubmit={handleSubmit}>
+      {/* form card */}
+      <div className="health-form-wrapper">
+        <form className="health-form-card" onSubmit={handleSubmit}>
+          {/* section: basics */}
+          <div className="health-section-title">Basic Information</div>
+          <div className="health-grid">
+            <div className="auth-field">
+              <label>Age</label>
+              <input type="number" name="age" placeholder="e.g. 28" onChange={handleChange} required />
+            </div>
+            <div className="auth-field">
+              <label>Gender</label>
+              <select name="gender" onChange={handleChange} required>
+                <option value="">Select gender</option>
+                <option>Male</option>
+                <option>Female</option>
+              </select>
+            </div>
+            <div className="auth-field">
+              <label>Height (cm)</label>
+              <input type="number" name="height" placeholder="e.g. 175" onChange={handleChange} required />
+            </div>
+            <div className="auth-field">
+              <label>Weight (kg)</label>
+              <input type="number" name="weight" placeholder="e.g. 70" onChange={handleChange} required />
+            </div>
+          </div>
 
-          <input
-            type="number"
-            name="age"
-            placeholder="Age"
-            onChange={handleChange}
-            required
-          />
+          {/* section: fitness */}
+          <div className="health-section-title">Fitness Profile</div>
+          <div className="health-grid">
+            <div className="auth-field">
+              <label>Fitness Goal</label>
+              <input type="text" name="fitness_goal" placeholder="e.g. Lose weight" onChange={handleChange} required />
+            </div>
+            <div className="auth-field">
+              <label>Activity Level</label>
+              <input type="text" name="activity_level" placeholder="e.g. Moderate" onChange={handleChange} required />
+            </div>
+            <div className="auth-field">
+              <label>Workout Preference</label>
+              <input type="text" name="workout_preference" placeholder="e.g. Home / Gym" onChange={handleChange} required />
+            </div>
+            <div className="auth-field">
+              <label>Available Time (min)</label>
+              <input type="number" name="available_time" placeholder="e.g. 45" onChange={handleChange} required />
+            </div>
+          </div>
 
-          <select
-            name="gender"
-            onChange={handleChange}
-            required
-          >
-            <option value="">Select Gender</option>
-            <option>Male</option>
-            <option>Female</option>
-          </select>
+          {/* section: medical */}
+          <div className="health-section-title">Medical & Conditions</div>
+          <div className="health-grid health-grid-full">
+            <div className="auth-field">
+              <label>Allergies</label>
+              <input type="text" name="allergies" placeholder="e.g. Peanuts, Dairy" onChange={handleChange} />
+            </div>
+            <div className="auth-field">
+              <label>Medical Conditions</label>
+              <input type="text" name="medical_conditions" placeholder="e.g. Diabetes" onChange={handleChange} />
+            </div>
+            <div className="auth-field">
+              <label>Injuries</label>
+              <input type="text" name="injuries" placeholder="e.g. Knee sprain" onChange={handleChange} />
+            </div>
+          </div>
 
-          <input
-            type="number"
-            name="height"
-            placeholder="Height (cm)"
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="number"
-            name="weight"
-            placeholder="Weight (kg)"
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="text"
-            name="fitness_goal"
-            placeholder="Fitness Goal"
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="text"
-            name="activity_level"
-            placeholder="Activity Level"
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="text"
-            name="workout_preference"
-            placeholder="Workout Preference"
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="number"
-            name="available_time"
-            placeholder="Workout Time (minutes)"
-            onChange={handleChange}
-            required
-          />
-
-          <input
-            type="text"
-            name="allergies"
-            placeholder="Allergies"
-            onChange={handleChange}
-          />
-
-          <input
-            type="text"
-            name="medical_conditions"
-            placeholder="Medical Conditions"
-            onChange={handleChange}
-          />
-
-          <input
-            type="text"
-            name="injuries"
-            placeholder="Injuries"
-            onChange={handleChange}
-          />
-
-          <button type="submit">Submit</button>
-
+          <button type="submit" className="auth-submit health-submit">
+            <FaCheckCircle size={16} /> Save Assessment
+          </button>
         </form>
       </div>
     </div>

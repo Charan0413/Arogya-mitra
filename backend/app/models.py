@@ -37,6 +37,12 @@ class User(Base):
         cascade="all, delete-orphan",
     )
 
+    weekly_plans = relationship(
+        "WeeklyPlan",
+        back_populates="user",
+        cascade="all, delete-orphan",
+    )
+
 
 class HealthAssessment(Base):
     __tablename__ = "health_assessments"
@@ -111,4 +117,28 @@ class NutritionPlan(Base):
     user = relationship(
         "User",
         back_populates="nutrition_plan",
+    )
+
+
+class WeeklyPlan(Base):
+    __tablename__ = "weekly_plans"
+
+    id = Column(Integer, primary_key=True, index=True)
+
+    user_id = Column(
+        Integer,
+        ForeignKey("users.id"),
+        nullable=False,
+    )
+
+    title = Column(String(200), nullable=False, default="Weekly Plan")
+    day_label = Column(String(50), nullable=False)
+    plan_data = Column(Text, nullable=False)
+    nutrition_data = Column(Text, nullable=True, default="")
+    plan_date = Column(String(20), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship(
+        "User",
+        back_populates="weekly_plans",
     )

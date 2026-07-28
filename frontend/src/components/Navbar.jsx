@@ -7,7 +7,8 @@ function Navbar() {
 
   const handleLogout = () => {
     localStorage.clear();
-    window.location.replace("/");
+    sessionStorage.clear();
+    window.location.href = "/";
   };
 
   return (
@@ -41,6 +42,20 @@ function Navbar() {
             className={location.pathname === "/nutrition-plan" ? "active" : ""}
           >
             🥗 Nutrition Plan
+          </Link>
+
+          <Link
+            to="/weekly-plan"
+            className={location.pathname === "/weekly-plan" ? "active" : ""}
+          >
+            📋 Weekly Plan
+          </Link>
+
+          <Link
+            to="/calendar"
+            className={location.pathname === "/calendar" ? "active" : ""}
+          >
+            📅 Calendar
           </Link>
 
         </div>

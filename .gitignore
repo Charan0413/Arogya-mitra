@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+.env
+*.db
+*.db-journal
+venv/
+node_modules/
+.vite/
+dist/

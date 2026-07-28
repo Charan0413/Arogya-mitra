@@ -6,6 +6,8 @@ import HealthForm from "./pages/HealthForm";
 import Dashboard from "./pages/Dashboard";
 import WorkoutPage from "./pages/WorkoutPage";
 import NutritionPage from "./pages/NutritionPage";
+import WeeklyPlanPage from "./pages/WeeklyPlanPage";
+import CalendarPage from "./pages/CalendarPage";
 
 function App() {
   const token = localStorage.getItem("token");
@@ -44,6 +46,18 @@ function App() {
         <Route
           path="/nutrition-plan"
           element={token ? <NutritionPage /> : <Navigate to="/" />}
+        />
+
+        {/* Weekly Plan Page */}
+        <Route
+          path="/weekly-plan"
+          element={token ? <WeeklyPlanPage /> : <Navigate to="/" />}
+        />
+
+        {/* Calendar Page */}
+        <Route
+          path="/calendar"
+          element={token ? <CalendarPage /> : <Navigate to="/" />}
         />
 
       </Routes>
