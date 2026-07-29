@@ -49,6 +49,10 @@ function CalendarPage() {
       }
     };
     fetchPlans();
+    // Re-fetch when chatbot reschedules plans
+    const handler = () => fetchPlans();
+    window.addEventListener("plans-updated", handler);
+    return () => window.removeEventListener("plans-updated", handler);
   }, []);
 
   /* ── fetch streak data for current month ── */

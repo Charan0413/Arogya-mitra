@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../services/api";
-import { FaPaperPlane, FaRobot, FaUser } from "react-icons/fa";
+import { FaPaperPlane, FaRobot, FaTimes } from "react-icons/fa";
 import "./ChatBox.css";
 
 /* ── strip markdown artifacts ── */
@@ -14,7 +14,7 @@ function stripMd(s) {
     .trim();
 }
 
-function ChatBox() {
+function ChatBox({ onClose }) {
   const [message, setMessage] = useState("");
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
@@ -47,12 +47,17 @@ function ChatBox() {
         <div className="am-chat-avatar">
           <FaRobot size={20} />
         </div>
-        <div>
+        <div className="am-chat-title">
           <h3>AROMI AI Coach</h3>
           <span className="am-chat-status">
             <span className="am-chat-dot" /> Online
           </span>
         </div>
+        {onClose && (
+          <button className="am-chat-header-close" onClick={onClose}>
+            <FaTimes size={16} />
+          </button>
+        )}
       </div>
 
       <div className="am-chat-body">

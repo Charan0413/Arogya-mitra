@@ -42,6 +42,30 @@
   color: #ffffff;
 }
 
+.am-chat-title {
+  flex: 1;
+}
+
+.am-chat-header-close {
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.2s;
+  margin-left: auto;
+}
+
+.am-chat-header-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+
 .am-chat-status {
   display: inline-flex;
   align-items: center;

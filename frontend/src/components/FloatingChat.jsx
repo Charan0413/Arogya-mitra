@@ -1,26 +1,32 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ChatBox from "./ChatBox";
-import { FaRobot, FaTimes } from "react-icons/fa";
+import { FaRobot } from "react-icons/fa";
 import "./FloatingChat.css";
 
 function FloatingChat() {
   const [open, setOpen] = useState(false);
+
+  // When chat closes, notify pages to refresh plan data
+  useEffect(() => {
+    if (!open) {
+      window.dispatchEvent(new CustomEvent("plans-updated"));
+    }
+  }, [open]);
 
   return (
     <>
       {open && (
         <div className="fc-overlay" onClick={() => setOpen(false)}>
           <div className="fc-panel" onClick={(e) => e.stopPropagation()}>
-            <button className="fc-close" onClick={() => setOpen(false)}>
-              <FaTimes size={18} />
-            </button>
-            <ChatBox />
+            <ChatBox onClose={() => setOpen(false)} />
           </div>
         </div>
       )}
-      <button className="fc-fab" onClick={() => setOpen(!open)}>
-        {open ? <FaTimes size={22} /> : <FaRobot size={24} />}
-      </button>
+      {!open && (
+        <button className="fc-fab" onClick={() => setOpen(true)}>
+          <FaRobot size={24} />
+        </button>
+      )}
     </>
   );
 }

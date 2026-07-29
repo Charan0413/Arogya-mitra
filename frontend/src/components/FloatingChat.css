@@ -32,28 +32,6 @@
   border-radius: 0;
 }
 
-.fc-close {
-  position: absolute;
-  top: 14px;
-  right: 14px;
-  z-index: 10;
-  width: 34px;
-  height: 34px;
-  border: none;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.15);
-  color: #fff;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.2s;
-}
-
-.fc-close:hover {
-  background: rgba(255,255,255,0.3);
-}
-
 .fc-fab {
   position: fixed;
   bottom: 28px;
