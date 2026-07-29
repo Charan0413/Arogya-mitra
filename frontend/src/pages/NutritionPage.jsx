@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
 import {
@@ -454,7 +455,7 @@ function NutritionPage() {
         )}
 
         {/* empty */}
-        {!loading && !plan && (
+          {!loading && !plan && (
           <div className="nut-empty">
             <div className="nut-empty-ring">
               <FaLeaf size={42} />
@@ -464,6 +465,9 @@ function NutritionPage() {
               Ask the AROMI chatbot to generate your personalised nutrition plan
               and it will appear here.
             </p>
+            <Link to="/dashboard" className="nut-empty-btn">
+              💬 Open Chat
+            </Link>
           </div>
         )}
       </div>

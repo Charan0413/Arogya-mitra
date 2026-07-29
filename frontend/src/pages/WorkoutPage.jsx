@@ -1,4 +1,5 @@
 import { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import api from "../services/api";
 
@@ -432,7 +433,7 @@ function WorkoutPage() {
         )}
 
         {/* empty */}
-        {!loading && !plan && (
+          {!loading && !plan && (
           <div className="wk-empty">
             <div className="wk-empty-ring">
               <FaFire size={42} />
@@ -442,6 +443,9 @@ function WorkoutPage() {
               Ask the AROMI chatbot to generate your personalised workout plan
               and it will appear here.
             </p>
+            <Link to="/dashboard" className="wk-empty-btn">
+              💬 Open Chat
+            </Link>
           </div>
         )}
       </div>

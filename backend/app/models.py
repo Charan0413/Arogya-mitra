@@ -152,5 +152,7 @@ class DailyStreak(Base):
     log_date = Column(String(20), nullable=False)
     workout_done = Column(Integer, default=0)  # 0/1
     nutrition_done = Column(Integer, default=0)  # 0/1
+    calories_consumed = Column(Integer, nullable=True, default=0)
+    calories_burned = Column(Integer, nullable=True, default=0)
 
     user = relationship("User", backref="streaks")

@@ -5,7 +5,8 @@ import "./Navbar.css";
 
 function Navbar() {
   const location = useLocation();
-  const fullName = localStorage.getItem("full_name") || "User";
+  const rawName = localStorage.getItem("full_name");
+  const fullName = rawName && rawName !== "undefined" ? rawName : "User";
   const [streak, setStreak] = useState(0);
 
   useEffect(() => {

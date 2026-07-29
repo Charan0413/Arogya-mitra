@@ -450,6 +450,8 @@
 .nut-empty-ring { display: flex; align-items: center; justify-content: center; width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #d1fae5, #dbeafe); color: var(--am-teal); margin-bottom: 28px; animation: nut-pulse 3s ease-in-out infinite; }
 .nut-empty h2 { margin: 0 0 10px; font-size: 24px; font-weight: 700; color: var(--am-text-dark); }
 .nut-empty p { margin: 0; max-width: 420px; font-size: 15px; line-height: 1.65; color: var(--am-text-dim); }
+.nut-empty-btn { display: inline-flex; align-items: center; gap: 8px; margin-top: 24px; padding: 14px 32px; background: linear-gradient(135deg, #7c3aed, #6d28d9); color: #fff; font-weight: 700; font-size: 15px; border: none; border-radius: 100px; text-decoration: none; transition: transform 0.2s, box-shadow 0.2s; }
+.nut-empty-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(124,58,237,0.35); }
 
 /* responsive */
 @media (max-width: 1100px) { .nut-page { padding: 28px 24px 50px; } .nut-hero { padding: 36px 32px; } .nut-hero h1 { font-size: 30px; } .nut-hero-deco { display: none; } .nut-content-row { grid-template-columns: 1fr 280px; } }

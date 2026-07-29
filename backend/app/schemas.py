@@ -117,6 +117,8 @@ class StreakLogRequest(BaseModel):
     log_date: str          # YYYY-MM-DD
     workout_done: Optional[bool] = None
     nutrition_done: Optional[bool] = None
+    calories_consumed: Optional[int] = None
+    calories_burned: Optional[int] = None
 
 
 class StreakResponse(BaseModel):
@@ -128,3 +130,13 @@ class StreakResponse(BaseModel):
 
 class StreakCalendarResponse(BaseModel):
     dates: list[str]       # dates where both workout+nutrition done
+
+
+class CalorieTrendEntry(BaseModel):
+    log_date: str
+    calories_consumed: int
+    calories_burned: int
+
+
+class CalorieTrendResponse(BaseModel):
+    days: list[CalorieTrendEntry]
