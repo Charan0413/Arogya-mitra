@@ -1,4 +1,5 @@
 from pydantic import BaseModel, EmailStr
+from typing import Optional
 
 
 # ==========================
@@ -105,3 +106,25 @@ class WeeklyPlanResponse(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+# ==========================
+# Streak
+# ==========================
+
+class StreakLogRequest(BaseModel):
+    user_id: int
+    log_date: str          # YYYY-MM-DD
+    workout_done: Optional[bool] = None
+    nutrition_done: Optional[bool] = None
+
+
+class StreakResponse(BaseModel):
+    current_streak: int
+    today_done: bool
+    workout_today: bool
+    nutrition_today: bool
+
+
+class StreakCalendarResponse(BaseModel):
+    dates: list[str]       # dates where both workout+nutrition done

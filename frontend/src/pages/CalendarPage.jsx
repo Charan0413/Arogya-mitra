@@ -35,6 +35,7 @@ function CalendarPage() {
   const [plans, setPlans] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [selectedPlan, setSelectedPlan] = useState(null);
+  const [streakDates, setStreakDates] = useState(new Set());
 
   useEffect(() => {
     const fetchPlans = async () => {
@@ -48,6 +49,23 @@ function CalendarPage() {
     };
     fetchPlans();
   }, []);
+
+  /* ── fetch streak data for current month ── */
+  useEffect(() => {
+    const fetchStreak = async () => {
+      try {
+        const userId = localStorage.getItem("user_id");
+        if (!userId) return;
+        const res = await api.get(`/streak/calendar/${userId}`, {
+          params: { year: currentDate.getFullYear(), month: currentDate.getMonth() + 1 },
+        });
+        setStreakDates(new Set(res.data.dates || []));
+      } catch {
+        // non-critical
+      }
+    };
+    fetchStreak();
+  }, [currentDate]);
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -124,13 +142,17 @@ function CalendarPage() {
                 const dateKey = `${year}-${String(month+1).padStart(2,"0")}-${String(day).padStart(2,"0")}`;
                 const hasPlan = planDates[dateKey];
                 const isToday = dateKey === todayKey;
+                const isStreak = streakDates.has(dateKey);
                 return (
                   <div
                     key={i}
-                    className={`cal-day-cell ${hasPlan ? "has-plan" : ""} ${isToday ? "today" : ""}`}
+                    className={`cal-day-cell ${hasPlan ? "has-plan" : ""} ${isToday ? "today" : ""} ${isStreak ? "streak" : ""}`}
                     onClick={() => hasPlan && setSelectedPlan(hasPlan[0])}
                   >
                     <span className="cal-day-num">{day}</span>
+                    {isStreak && (
+                      <div className="cal-streak-dot" title="Streak day">🔥</div>
+                    )}
                     {hasPlan && (
                       <div className="cal-dots">
                         {hasPlan[0].plan_data && <div className="cal-dot cal-dot-workout" />}

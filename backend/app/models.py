@@ -142,3 +142,15 @@ class WeeklyPlan(Base):
         "User",
         back_populates="weekly_plans",
     )
+
+
+class DailyStreak(Base):
+    __tablename__ = "daily_streaks"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    log_date = Column(String(20), nullable=False)
+    workout_done = Column(Integer, default=0)  # 0/1
+    nutrition_done = Column(Integer, default=0)  # 0/1
+
+    user = relationship("User", backref="streaks")

@@ -102,6 +102,7 @@ function extractMeals(body) {
   const SKIP = /^(total|calories|protein|carbs?|fats?|fiber|water|hydration|macros?|nutrients?|notes?|tips?)/i;
 
   let currentMeal = null;
+  let currentMealFull = null;
   let buf = [];
 
   for (const raw of lines) {
@@ -112,9 +113,10 @@ function extractMeals(body) {
       // save previous meal
       if (currentMeal) {
         const mealText = buf.join("\n").trim();
-        const cal = parseCalories(mealText) || estimateMealCalories(currentMeal);
+        const cal = parseCalories(currentMealFull) || parseCalories(mealText) || estimateMealCalories(currentMeal);
         meals.push({ name: currentMeal, text: mealText, calories: cal });
       }
+      currentMealFull = t;
       currentMeal = t.replace(/[:\-–].*$/, "").trim();
       buf = [];
     } else if (!SKIP.test(t) && currentMeal) {
@@ -125,7 +127,7 @@ function extractMeals(body) {
   // save last meal
   if (currentMeal) {
     const mealText = buf.join("\n").trim();
-    const cal = parseCalories(mealText) || estimateMealCalories(currentMeal);
+    const cal = parseCalories(currentMealFull) || parseCalories(mealText) || estimateMealCalories(currentMeal);
     meals.push({ name: currentMeal, text: mealText, calories: cal });
   }
 
@@ -217,7 +219,30 @@ function NutritionPage() {
     const next = new Set(current);
     if (next.has(mealIdx)) next.delete(mealIdx);
     else next.add(mealIdx);
-    saveChecked({ ...checked, [dayIdx]: next });
+    const newChecked = { ...checked, [dayIdx]: next };
+    saveChecked(newChecked);
+
+    /* ── sync streak immediately ── */
+    const meals = extractMeals(days[dayIdx]?.body || "");
+    const newIsComplete = meals.length > 0 && next.size === meals.length;
+    const userId = localStorage.getItem("user_id");
+    let logDate;
+    if (startDate) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + dayIdx);
+      logDate = d.toISOString().split("T")[0];
+    } else {
+      logDate = new Date().toISOString().split("T")[0];
+    }
+    if (userId) {
+      api.post("/streak/log", {
+        user_id: parseInt(userId, 10),
+        log_date: logDate,
+        nutrition_done: newIsComplete,
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent("streak-updated"));
+      }).catch(() => {});
+    }
   };
 
   useEffect(() => {
@@ -277,6 +302,34 @@ function NutritionPage() {
       setDayIndex(todayIndex);
     }
   }, [loading, days.length]);
+
+  /* ── sync streak on initial load (pre-ticked boxes) ── */
+  useEffect(() => {
+    if (loading || !days.length) return;
+    const meals = extractMeals(days[currentIndex]?.body || "");
+    if (!meals.length) return;
+    const allDone = (checked[currentIndex]?.size || 0) === meals.length;
+    if (!allDone) return;
+    const userId = localStorage.getItem("user_id");
+    let logDate;
+    if (startDate) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + currentIndex);
+      logDate = d.toISOString().split("T")[0];
+    } else {
+      logDate = new Date().toISOString().split("T")[0];
+    }
+    if (userId) {
+      api.post("/streak/log", {
+        user_id: parseInt(userId, 10),
+        log_date: logDate,
+        nutrition_done: true,
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent("streak-updated"));
+      }).catch(() => {});
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const prevDay = () => setDayIndex((i) => Math.max(0, i - 1));
   const nextDay = () => setDayIndex((i) => Math.min(days.length - 1, i + 1));
@@ -389,10 +442,13 @@ function NutritionPage() {
 
             {/* meal tracker card */}
             <MealTracker
+              key={currentIndex}
               meals={currentMeals}
               dayIndex={currentIndex}
               checked={checked[currentIndex] || new Set()}
               onToggle={(mealIdx) => toggleMeal(currentIndex, mealIdx)}
+              startDate={startDate}
+              dayOffset={currentIndex}
             />
           </div>
         )}
@@ -416,7 +472,7 @@ function NutritionPage() {
 }
 
 /* ═══════════════════ MEAL TRACKER ═══════════════════ */
-function MealTracker({ meals, dayIndex, checked, onToggle }) {
+function MealTracker({ meals, dayIndex, checked, onToggle, startDate, dayOffset }) {
   const total = meals.length;
   const done = checked.size;
   const pct = total ? Math.round((done / total) * 100) : 0;

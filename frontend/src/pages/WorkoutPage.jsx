@@ -184,7 +184,30 @@ function WorkoutPage() {
     const next = new Set(current);
     if (next.has(exIdx)) next.delete(exIdx);
     else next.add(exIdx);
-    saveChecked({ ...checked, [dayIdx]: next });
+    const newChecked = { ...checked, [dayIdx]: next };
+    saveChecked(newChecked);
+
+    /* ── sync streak immediately ── */
+    const exs = extractExercises(days[dayIdx]?.body || "");
+    const newIsComplete = exs.length > 0 && next.size === exs.length;
+    const userId = localStorage.getItem("user_id");
+    let logDate;
+    if (startDate) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + dayIdx);
+      logDate = d.toISOString().split("T")[0];
+    } else {
+      logDate = new Date().toISOString().split("T")[0];
+    }
+    if (userId) {
+      api.post("/streak/log", {
+        user_id: parseInt(userId, 10),
+        log_date: logDate,
+        workout_done: newIsComplete,
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent("streak-updated"));
+      }).catch(() => {});
+    }
   };
 
   useEffect(() => {
@@ -252,6 +275,36 @@ function WorkoutPage() {
       setDayIndex(todayIndex);
     }
   }, [loading, days.length]);
+
+  /* ── sync streak on initial load (pre-ticked boxes) ── */
+  useEffect(() => {
+    if (loading || !days.length) return;
+    const exs = extractExercises(days[currentIndex]?.body || "");
+    if (!exs.length) return;
+    const allDone = (checked[currentIndex]?.size || 0) === exs.length;
+    if (!allDone) return;
+    // All boxes ticked on load → sync to backend
+    const userId = localStorage.getItem("user_id");
+    let logDate;
+    if (startDate) {
+      const d = new Date(startDate);
+      d.setDate(d.getDate() + currentIndex);
+      logDate = d.toISOString().split("T")[0];
+    } else {
+      logDate = new Date().toISOString().split("T")[0];
+    }
+    if (userId) {
+      api.post("/streak/log", {
+        user_id: parseInt(userId, 10),
+        log_date: logDate,
+        workout_done: true,
+      }).then(() => {
+        window.dispatchEvent(new CustomEvent("streak-updated"));
+      }).catch(() => {});
+    }
+    // only run once per mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading]);
 
   const prevDay = () => setDayIndex((i) => Math.max(0, i - 1));
   const nextDay = () => setDayIndex((i) => Math.min(days.length - 1, i + 1));
@@ -367,10 +420,13 @@ function WorkoutPage() {
 
             {/* progress tracker card */}
             <ProgressTracker
+              key={currentIndex}
               exercises={extractExercises(currentDay.body)}
               dayIndex={currentIndex}
               checked={checked[currentIndex] || new Set()}
               onToggle={(exIdx) => toggleExercise(currentIndex, exIdx)}
+              startDate={startDate}
+              dayOffset={currentIndex}
             />
           </div>
         )}
@@ -394,11 +450,13 @@ function WorkoutPage() {
 }
 
 /* ═══════════════════ PROGRESS TRACKER ═══════════════════ */
-function ProgressTracker({ exercises, dayIndex, checked, onToggle }) {
+function ProgressTracker({ exercises, dayIndex, checked, onToggle, startDate, dayOffset }) {
   const total = exercises.length;
   const done = checked.size;
   const pct = total ? Math.round((done / total) * 100) : 0;
   const isComplete = total > 0 && done === total;
+
+  /* ── calories ── */
 
   /* ── calories ── */
   const totalCalories = useMemo(

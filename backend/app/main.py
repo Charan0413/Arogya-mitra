@@ -11,6 +11,7 @@ from app.routers import calendar
 from app.routers import workout_plan
 from app.routers import nutrition_plan
 from app.routers import weekly_plan
+from app.routers import streak
 
 Base.metadata.create_all(bind=engine)
 
@@ -37,6 +38,7 @@ app.include_router(calendar.router)
 app.include_router(workout_plan.router)
 app.include_router(nutrition_plan.router)
 app.include_router(weekly_plan.router)
+app.include_router(streak.router)
 
 @app.get("/")
 def home():
