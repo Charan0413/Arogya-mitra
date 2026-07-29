@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import FloatingChat from "../components/FloatingChat";
 import api from "../services/api";
 import {
   FaDumbbell,
@@ -413,6 +414,7 @@ function WeeklyPlanPage() {
             </div>
           </div>
         )}
+        <FloatingChat />
       </div>
     </>
   );

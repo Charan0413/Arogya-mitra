@@ -1,0 +1,89 @@
+/* ═══════════════════════════════════════════════
+   FloatingChat — global FAB + overlay
+   ═══════════════════════════════════════════════ */
+
+.fc-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: rgba(0,0,0,0.35);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 24px;
+  animation: fc-fade 0.2s ease;
+}
+
+.fc-panel {
+  position: relative;
+  width: 420px;
+  max-width: 100%;
+  max-height: 80vh;
+  background: var(--am-card);
+  border-radius: var(--am-r-lg);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.18);
+  overflow-y: auto;
+  animation: fc-slide 0.25s ease;
+}
+
+.fc-panel .am-chat {
+  box-shadow: none;
+  border-radius: 0;
+}
+
+.fc-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 10;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.fc-close:hover {
+  background: rgba(255,255,255,0.3);
+}
+
+.fc-fab {
+  position: fixed;
+  bottom: 28px;
+  right: 28px;
+  z-index: 1000;
+  width: 58px;
+  height: 58px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #7c3aed, #6d28d9);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 24px rgba(124,58,237,0.4);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.fc-fab:hover {
+  transform: translateY(-3px) scale(1.04);
+  box-shadow: 0 10px 36px rgba(124,58,237,0.5);
+}
+
+@keyframes fc-fade {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes fc-slide {
+  from { transform: translateY(24px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}

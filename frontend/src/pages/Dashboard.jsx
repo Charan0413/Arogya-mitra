@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
-import ChatBox from "../components/ChatBox";
+import FloatingChat from "../components/FloatingChat";
 import api from "../services/api";
 import {
   FaCalendarAlt,
@@ -17,12 +17,11 @@ import {
 } from "react-icons/fa";
 import "./Dashboard.css";
 
-const WEEKDAY_SHORT = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"];
+const WEEKDAY_SHORT = ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"];
 
 /* ── parse total calories from nutrition text ── */
 function parseDailyCalories(text) {
   if (!text) return 0;
-  // Find all numbers followed by kcal/calories/cal
   const re = /(\d{2,4})\s*(kcal|calories?|cal)\b/gi;
   let total = 0;
   let m;
@@ -32,10 +31,11 @@ function parseDailyCalories(text) {
   return total;
 }
 
-/* ── format date as short weekday ── */
+/* ── format date as short weekday (Mon-first) ── */
 function formatWeekday(dateStr) {
   const d = new Date(dateStr + "T00:00:00");
-  return WEEKDAY_SHORT[d.getDay()];
+  // d.getDay(): 0=Sun, 1=Mon ... 6=Sat → rotate so Mon=0
+  return WEEKDAY_SHORT[(d.getDay() + 6) % 7];
 }
 
 function Dashboard() {
@@ -60,10 +60,8 @@ function Dashboard() {
 
         setStreakData(streakRes.data);
 
-        // History (last 7 days)
         setHistory(histRes.data.days || []);
 
-        // Calorie trend: map nutrition_data from weekly_plans onto dates
         const plans = plansRes.data || [];
         const calByDate = {};
         for (const p of plans) {
@@ -72,7 +70,6 @@ function Dashboard() {
             calByDate[p.plan_date] = total;
           }
         }
-        // Build 7-day array matching history order
         const days = histRes.data.days || [];
         const calDays = days.map((d) => ({
           date: d.log_date,
@@ -80,7 +77,7 @@ function Dashboard() {
         }));
         setCalorieDays(calDays);
       } catch {
-        // silently fail — non-critical
+        // silently fail
       } finally {
         setLoading(false);
       }
@@ -226,7 +223,7 @@ function Dashboard() {
                     />
                   </div>
                   <span className="dash-heat-date">
-                    {day.log_date.slice(5)} {/* MM-DD */}
+                    {day.log_date.slice(5)}
                   </span>
                 </div>
               ))}
@@ -260,8 +257,8 @@ function Dashboard() {
           </div>
         )}
 
-        {/* ── chat ── */}
-        <ChatBox />
+        {/* ── floating chat ── */}
+        <FloatingChat />
       </div>
     </>
   );

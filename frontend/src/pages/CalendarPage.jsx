@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import FloatingChat from "../components/FloatingChat";
 import api from "../services/api";
 import {
   FaCalendarAlt,
@@ -281,6 +282,7 @@ function CalendarPage() {
             </div>
           </div>
         )}
+        <FloatingChat />
       </div>
     </>
   );

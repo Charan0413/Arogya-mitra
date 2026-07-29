@@ -174,19 +174,20 @@
   flex-direction: column;
   align-items: center;
   gap: 8px;
-  padding: 14px 16px;
+  padding: 16px 14px;
   background: var(--am-card);
   border-radius: var(--am-r-md);
   box-shadow: var(--am-sh-card);
-  min-width: 72px;
+  min-width: 90px;
 }
 
 .dash-heat-label {
   font-size: 12px;
   font-weight: 700;
-  color: var(--am-text-dim);
-  text-transform: uppercase;
+  color: var(--am-text-dark);
+  text-transform: capitalize;
   letter-spacing: 0.3px;
+  white-space: nowrap;
 }
 
 .dash-heat-dots {

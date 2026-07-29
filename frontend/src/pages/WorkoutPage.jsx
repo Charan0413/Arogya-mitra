@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import FloatingChat from "../components/FloatingChat";
 import api from "../services/api";
 
 import {
@@ -448,6 +449,7 @@ function WorkoutPage() {
             </Link>
           </div>
         )}
+        <FloatingChat />
       </div>
     </>
   );
